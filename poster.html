@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ER Queue Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .download-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .download-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .poster {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .student-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 15px 20px;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .section-title {
+            background: #1e3c72;
+            color: white;
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .problem-box {
+            background: #f8f9fa;
+            border-left: 4px solid #1e3c72;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .solution-points {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+        
+        .solution-points ul {
+            margin-left: 15px;
+            margin-top: 5px;
+        }
+        
+        .solution-points li {
+            margin: 3px 0;
+        }
+        
+        .step-box {
+            background: #ffffff;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .step-header {
+            color: #1e3c72;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #1e3c72;
+        }
+        
+        .diagram {
+            text-align: center;
+            padding: 8px;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+        
+        .nodes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .node.critical {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .node.head {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .node.tail {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .node.special {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .arrow {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .labels {
+            font-size: 9px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .note {
+            font-size: 9px;
+            color: #555;
+            font-style: italic;
+            margin-top: 3px;
+        }
+        
+        .final-answer {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid #1e3c72;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .final-answer h3 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .answer-item {
+            background: white;
+            padding: 6px;
+            margin: 4px 0;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+            font-size: 11px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .download-btn {
+                display: none;
+            }
+            .poster {
+                box-shadow: none;
+                border-radius: 0;
+                width: 100%;
+                height: 100vh;
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="download-btn" onclick="downloadPDF()">📥 Download PDF</button>
+    
+    <div class="poster">
+        <div class="header">
+            <h1>🏥 HOSPITAL ER QUEUE SYSTEM</h1>
+            <div class="student-info">
+                <strong>Name:</strong> Hina zahra | <strong>Roll No:</strong> 14
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="left-column">
+                <div>
+                    <div class="section-title">📋 Problem Statement</div>
+                    <div class="problem-box">
+                        A hospital needs to manage ER patients efficiently using a queue system that handles:
+                        <div class="solution-points" style="margin-top: 8px;">
+                            <ul>
+                                <li>Critical patients added at beginning</li>
+                                <li>Normal patients added at end</li>
+                                <li>Insert at specific positions</li>
+                                <li>Remove from beginning after treatment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="section-title">💡 Proposed Solution</div>
+                    <div class="solution-points">
+                        <strong>Data Structure: Doubly Linked List</strong>
+                        <div style="margin-top: 5px;">
+                            Each node has: Patient ID, prev pointer, next pointer
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <strong>Why?</strong> Easy insertion/deletion from both ends and traversal in both directions.
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="section-title">🔄 Operations Trace</div>
+                    
+                    <div class="step-box">
+                        <div class="step-header">Step 1: insertAtEnd(101)</div>
+                        <div class="diagram">
+                            <div class="nodes">
+                                <div class="node">101</div>
+                            </div>
+                            <div class="note">First patient</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-box">
+                        <div class="step-header">Step 2: insertAtEnd(102)</div>
+                        <div class="diagram">
+                            <div class="nodes">
+                                <div class="node">101</div>
+                                <span class="arrow">⇄</span>
+                                <div class="node">102</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-box">
+                        <div class="step-header">Step 3: insertAtBeginning(200)</div>
+                        <div class="diagram">
+                            <div class="nodes">
+                                <div class="node critical">200</div>
+                                <span class="arrow">⇄</span>
+                                <div class="node">101</div>
+                                <span class="arrow">⇄</span>
+                                <div class="node">102</div>
+                            </div>
+                            <div class="note">Critical patient!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="step-box">
+                    <div class="step-header">Step 4: insertAtPosition(150, 2)</div>
+                    <div class="diagram">
+                        <div class="nodes">
+                            <div class="node critical">200</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node special">150</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">101</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">102</div>
+                        </div>
+                        <div class="note">Inserted at position 2</div>
+                    </div>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-header">Step 5: deleteFromBeginning()</div>
+                    <div class="diagram">
+                        <div class="nodes">
+                            <div class="node head">150</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">101</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">102</div>
+                        </div>
+                        <div class="note">Patient 200 removed</div>
+                    </div>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-header">Step 6: insertAtEnd(300) - FINAL</div>
+                    <div class="diagram">
+                        <div class="nodes">
+                            <div class="node head">150</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">101</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node">102</div>
+                            <span class="arrow">⇄</span>
+                            <div class="node tail">300</div>
+                        </div>
+                        <div class="labels">Head: 150 | Tail: 300</div>
+                    </div>
+                </div>
+                
+                <div class="final-answer">
+                    <h3>📊 Final Answers</h3>
+                    <div class="answer-item">
+                        <strong>(a)</strong> Head Patient ID: <strong>150</strong>
+                    </div>
+                    <div class="answer-item">
+                        <strong>(b)</strong> Tail Patient ID: <strong>300</strong>
+                    </div>
+                    <div class="answer-item">
+                        <strong>(c)</strong> Forward: <strong>150 ⇄ 101 ⇄ 102 ⇄ 300</strong>
+                    </div>
+                    <div class="answer-item">
+                        <strong>(d)</strong> Backward: <strong>300 ⇄ 102 ⇄ 101 ⇄ 150</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function downloadPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
